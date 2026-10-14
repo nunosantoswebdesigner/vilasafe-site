@@ -5,8 +5,8 @@ export const SITE = {
   title: "Vila Safe",
   description:
     "Projeto cívico independente: um mapa público onde residentes sinalizam buracos, tampas de esgoto abertas, calçada partida e outros perigos na via pública. A funcionar na Foz do Arelho.",
-  /** Imagem de partilha (Open Graph / Twitter). Ficheiro em public/, 1200×630. */
-  ogImage: { url: "/og-image.jpg", width: 1200, height: 630, alt: "Vila Safe — o mapa dos perigos na via pública" },
+  /** Imagem de partilha (Open Graph / Twitter). Ficheiro em public/, 1200×630 (PNG). */
+  ogImage: { url: "/og-image.png", width: 1200, height: 630, alt: "Vila Safe — o mapa dos perigos na via pública" },
   appUrl: "https://fozdoarelho.vilasafe.pt",
   locale: "pt_PT",
   language: "pt-PT",

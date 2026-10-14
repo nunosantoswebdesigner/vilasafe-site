@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Notas de trabalho (brief e especificação), fora do repositório
+prompt-landing-vilasafe.md
+assets/SPEC.md
