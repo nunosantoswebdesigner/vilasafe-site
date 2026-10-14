@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VilaSafe — o mapa dos perigos da via pública, feito por quem lá vive</title>
+<meta name="description" content="Projeto cívico independente: um mapa público onde residentes sinalizam buracos, calçada partida e outros perigos na via pública. A funcionar na Foz do Arelho.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+html, body { margin: 0; background: #0A0A0A; }
+* { box-sizing: border-box; }
+a { color: inherit; text-decoration-color: #F7931E; text-underline-offset: 0.18em; }
+a:hover { color: #F7931E; }
+a:focus-visible, button:focus-visible { outline: 3px solid #F7931E; outline-offset: 4px; }
+::selection { background: #F7931E; color: #0A0A0A; }
+@keyframes vsTape { from { background-position: 0 0; } to { background-position: 40px 0; } }
+@keyframes vsRing { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="--bg: #0A0A0A; --ink: #F4F1EC; --muted: #A3A09A; --line: #262626; --panel: #141414; --acc: #F7931E; --edge: #1d1d1d; --sev: #EAB308; background: var(--bg); color: var(--ink); font-family: 'Barlow', sans-serif; overflow-x: clip; transition: background-color .5s, color .5s;">
+
+  <header style="position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); transition: background-color .5s;">
+    <nav aria-label="Principal" style="max-width: 1360px; margin: 0 auto; padding: 14px clamp(20px, 4vw, 48px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="#topo" aria-label="VilaSafe, início" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink);">
+        <svg viewBox="0 0 100 100" width="34" height="34" fill="#F7931E" aria-hidden="true"><path d="M44 12Q50 3 56 12L62 32H38Z"></path><path d="M35.2 42H64.8L69.5 58H30.5Z"></path><path d="M27.6 68H72.4L76 82H24Z"></path><rect x="10" y="80" width="80" height="10" rx="5"></rect></svg>
+        <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 30px; letter-spacing: -0.01em; line-height: 1;">VILASAFE</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: clamp(10px, 2vw, 22px);">
+        <button type="button" onClick="{{ toggleTheme }}" aria-label="Alternar tema claro ou escuro" style="background: none; border: 1px solid var(--line); color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 9px 12px; cursor: pointer; letter-spacing: 0.04em;">{{ themeLabel }}</button>
+        <a href="https://fozdoarelho.vilasafe.pt" style="background: #F7931E; color: #0A0A0A; text-decoration: none; font-weight: 700; font-size: 15px; padding: 10px 16px; white-space: nowrap;">Abrir a app</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="topo">
+
+    <section aria-labelledby="h-hero" style="max-width: 1360px; margin: 0 auto; padding: clamp(40px, 7vw, 110px) clamp(20px, 4vw, 48px) clamp(60px, 8vw, 120px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: clamp(40px, 5vw, 80px); align-items: center;">
+      <div style="display: flex; flex-direction: column; gap: 32px;">
+        <div data-reveal="" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.1em; color: var(--muted);">PROJETO CÍVICO · A FUNCIONAR NA FOZ DO ARELHO</div>
+        <h1 id="h-hero" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(64px, 9.4vw, 152px); line-height: 0.86; letter-spacing: -0.012em;">
+          <span data-reveal="" data-delay="80" style="display: block;">Viste um</span>
+          <span data-reveal="" data-delay="160" style="display: block;">buraco?</span>
+          <span data-reveal="" data-delay="240" style="display: block; color: var(--acc);">Fica no mapa.</span>
+        </h1>
+        <p data-reveal="" data-delay="340" style="margin: 0; max-width: 34em; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.5; color: var(--ink); text-wrap: pretty;">O VilaSafe é um mapa público onde quem vive na vila sinaliza o que é perigoso na via pública — com foto, local exato e gravidade. Toda a gente consulta. Ninguém precisa de conta.</p>
+        <div data-reveal="" data-delay="420" style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px;">
+          <a href="https://fozdoarelho.vilasafe.pt" style="display: inline-flex; align-items: center; gap: 14px; background: var(--ink); color: var(--bg); text-decoration: none; padding: 18px 26px; font-weight: 700; font-size: 18px;">Ver a app na Foz do Arelho <span aria-hidden="true">→</span></a>
+          <span style="font-size: 15px; color: var(--muted); max-width: 22em; line-height: 1.4;">Independente. Sem ligação a câmara ou junta de freguesia.</span>
+        </div>
+      </div>
+
+      <div style="position: relative; height: clamp(600px, 62vw, 760px); display: flex; align-items: center; justify-content: center; perspective: 1600px;">
+        <div style="position: absolute; left: 50%; bottom: 3%; width: 300px; height: 40px; margin-left: -150px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); transform: translateX(calc(var(--hry, -16) * 1.4px)); filter: blur(6px);"></div>
+        <div data-phone="hero" style="position: relative; width: 300px; height: 620px; transform-style: preserve-3d; transform: rotateX(calc(var(--hrx, 6) * 1deg)) rotateY(calc(var(--hry, -16) * 1deg));">
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: #0d0d0d; transform: translateZ(-16px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-14px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-12px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-10px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-8px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-6px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-4px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-2px);"></div>
+          <div style="position: absolute; inset: 0; border-radius: 48px; background: #0A0A0A; box-shadow: inset 0 0 0 1.5px #3a3a3a;"></div>
+          <div style="position: absolute; inset: 10px; border-radius: 38px; overflow: hidden; background: #e8e2d6; transform: translateZ(1px);">
+            <img src="../public/media/app/mapa-ruas.jpg" alt="Mapa da app VilaSafe na Foz do Arelho, com seis marcadores coloridos por gravidade" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(calc(100deg + var(--hry, -16) * 2deg), rgba(255,255,255,0) 30%, rgba(255,255,255,.22) 48%, rgba(255,255,255,0) 62%); mix-blend-mode: screen;"></div>
+          </div>
+          <div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 300px; height: 620px; transform: translateZ(2px); pointer-events: none;">
+            <div style="position: absolute; left: 246.5px; top: 188px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #EAB308; animation: vsRing 2.6s ease-out 0s infinite;"></div>
+            <div style="position: absolute; left: 233.4px; top: 232.4px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #F97316; animation: vsRing 2.6s ease-out 0.45s infinite;"></div>
+            <div style="position: absolute; left: 151.4px; top: 242.7px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #EF4444; animation: vsRing 2.6s ease-out 0.9s infinite;"></div>
+            <div style="position: absolute; left: 132.1px; top: 262.9px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #EAB308; animation: vsRing 2.6s ease-out 1.35s infinite;"></div>
+            <div style="position: absolute; left: 56.4px; top: 283.6px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #EAB308; animation: vsRing 2.6s ease-out 1.8s infinite;"></div>
+            <div style="position: absolute; left: 23.7px; top: 310.8px; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #EF4444; animation: vsRing 2.6s ease-out 2.25s infinite;"></div>
+          </div>
+          <div aria-hidden="true" style="position: absolute; left: -96px; top: 380px; width: 250px; transform: translateZ(90px); background: #0A0A0A; color: #F4F1EC; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 24px 50px rgba(0,0,0,.45); border: 1px solid #2a2a2a;">
+            <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #F97316;"></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #F97316;">MUITO GRAVE</span></div>
+            <div style="font-weight: 700; font-size: 17px; line-height: 1.2;">Buraco profundo na estrada</div>
+            <div style="height: 6px; background: linear-gradient(-45deg, #F7931E 25%, transparent 25% 50%, #F7931E 50% 75%, transparent 75%) 0 0 / 12px 12px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div aria-hidden="true" style="height: 22px; background: linear-gradient(-45deg, #F7931E 25%, transparent 25% 50%, #F7931E 50% 75%, transparent 75%) 0 0 / 40px 40px; animation: vsTape 7s linear infinite;"></div>
+
+    <section data-problem="" aria-labelledby="h-prob" style="position: relative; height: 220vh;">
+      <div style="position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center;">
+        <div style="max-width: 1360px; margin: 0 auto; padding: 80px clamp(20px, 4vw, 48px); display: flex; flex-direction: column; gap: 40px; width: 100%;">
+          <h2 id="h-prob" style="margin: 0; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 13px; letter-spacing: 0.1em; color: var(--muted);">O PROBLEMA</h2>
+          <p data-words="" style="margin: 0; max-width: 20em; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 700; font-size: clamp(40px, 5.6vw, 92px); line-height: 1.0; text-transform: uppercase; text-wrap: pretty;">Hoje, quem vê um buraco liga, manda um email ou vai lá pessoalmente. E nunca mais sabe o que aconteceu. Não fica registo. O problema seguinte repete tudo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section data-story="" aria-labelledby="h-story" style="position: relative; border-top: 1px solid var(--line);">
+      <h2 id="h-story" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Como se sinaliza um problema</h2>
+      <div style="position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: var(--phoneJustify, flex-end); padding: 0 clamp(20px, 8vw, 140px); perspective: 1600px; pointer-events: none;">
+        <div style="transform: translateY(var(--phoneY, 0px)) scale(var(--phoneScale, 1));">
+          <div data-phone="story" style="position: relative; width: 300px; height: 620px; transform-style: preserve-3d; transform: rotateX(calc(var(--srx, 6) * 1deg)) rotateY(calc(var(--sry, -14) * 1deg));">
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: #0d0d0d; transform: translateZ(-16px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-14px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-12px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-10px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-8px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-6px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-4px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: var(--edge); transform: translateZ(-2px);"></div>
+            <div style="position: absolute; inset: 0; border-radius: 48px; background: #0A0A0A; box-shadow: inset 0 0 0 1.5px #3a3a3a;"></div>
+            <div style="position: absolute; inset: 10px; border-radius: 38px; overflow: hidden; background: #0A0A0A; transform: translateZ(1px);">
+              <img data-screen="0" src="../public/media/ia/f000.jpg" alt="Formulário de reporte com a foto de um buraco carregada" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: opacity .5s;">
+              <img data-screen="1" data-aiframe="" src="../public/media/ia/f000.jpg" alt="A IA a sugerir título e descrição a partir da foto" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s;">
+              <img data-screen="2" src="../public/media/app/home.jpg" alt="Mapa com a fronteira da freguesia desenhada a tracejado vermelho" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s;">
+              <img data-screen="3" src="../public/media/app/detalhe.jpg" alt="Detalhe de um reporte aprovado, com foto, morada e gravidade" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s;">
+              <img data-screen="4" src="../public/media/app/mapa-ruas.jpg" alt="Mapa público com os reportes aprovados" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .5s;">
+            </div>
+            <div aria-hidden="true" style="position: absolute; left: -26px; top: 46px; transform: translateZ(70px); background: #F7931E; color: #0A0A0A; font-family: 'JetBrains Mono', monospace; font-size: 15px; padding: 9px 14px; box-shadow: 0 16px 34px rgba(0,0,0,.4);"><span data-stepnum="">01</span> / 05</div>
+          </div>
+        </div>
+      </div>
+      <div style="position: relative; margin-top: -100vh; max-width: 1360px; margin-left: auto; margin-right: auto; padding: 0 clamp(20px, 4vw, 48px);">
+        <div data-step="0" style="min-height: 100vh; display: flex; align-items: var(--stepAlign, center); padding: 12vh 0;">
+          <div style="max-width: var(--stepW, 520px); width: 100%; background: var(--stepBg, transparent); padding: var(--stepPad, 0px); display: flex; flex-direction: column; gap: 22px; transition: opacity .4s;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc);">01</div>
+            <h3 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 6vw, 92px); line-height: 0.9;">Tira a foto.</h3>
+            <p style="margin: 0; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.55; color: var(--ink); text-wrap: pretty;">Na hora, pela câmara, ou escolhida da galeria. A imagem é comprimida no próprio telemóvel antes de ser enviada — pensado para quem tem pouca rede.</p>
+          </div>
+        </div>
+        <div data-step="1" style="min-height: 100vh; display: flex; align-items: var(--stepAlign, center); padding: 12vh 0;">
+          <div style="max-width: var(--stepW, 520px); width: 100%; background: var(--stepBg, transparent); padding: var(--stepPad, 0px); display: flex; flex-direction: column; gap: 22px; transition: opacity .4s;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc);">02 · ASSISTIDO POR IA</div>
+            <h3 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 6vw, 92px); line-height: 0.9;">A IA sugere. Tu decides.</h3>
+            <p style="margin: 0; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.55; color: var(--ink); text-wrap: pretty;">Ao carregar a foto, a app propõe um título e uma descrição em português, em cerca de um segundo. Lês, corriges ou ignoras. Às vezes erra — por isso é só uma sugestão.</p>
+            <p style="margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted);">Se a IA falhar ou demorar, o formulário pede-te para escrever à mão. O reporte nunca fica bloqueado.</p>
+          </div>
+        </div>
+        <div data-step="2" style="min-height: 100vh; display: flex; align-items: var(--stepAlign, center); padding: 12vh 0;">
+          <div style="max-width: var(--stepW, 520px); width: 100%; background: var(--stepBg, transparent); padding: var(--stepPad, 0px); display: flex; flex-direction: column; gap: 22px; transition: opacity .4s;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc);">03</div>
+            <h3 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 6vw, 92px); line-height: 0.9;">Marca o sítio.</h3>
+            <p style="margin: 0; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.55; color: var(--ink); text-wrap: pretty;">Pelo GPS ou com um toque no mapa. A app conhece a fronteira da freguesia — está desenhada a tracejado — e recusa pontos que fiquem fora dela.</p>
+          </div>
+        </div>
+        <div data-step="3" style="min-height: 100vh; display: flex; align-items: var(--stepAlign, center); padding: 12vh 0;">
+          <div style="max-width: var(--stepW, 520px); width: 100%; background: var(--stepBg, transparent); padding: var(--stepPad, 0px); display: flex; flex-direction: column; gap: 22px; transition: opacity .4s;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc);">04</div>
+            <h3 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 6vw, 92px); line-height: 0.9;">Uma pessoa revê.</h3>
+            <p style="margin: 0; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.55; color: var(--ink); text-wrap: pretty;">Nada vai direto para o mapa. Cada reporte entra como pendente e um moderador aprova ou rejeita. O nome e o email de quem reporta servem só para isto — nunca ficam públicos.</p>
+          </div>
+        </div>
+        <div data-step="4" style="min-height: 100vh; display: flex; align-items: var(--stepAlign, center); padding: 12vh 0;">
+          <div style="max-width: var(--stepW, 520px); width: 100%; background: var(--stepBg, transparent); padding: var(--stepPad, 0px); display: flex; flex-direction: column; gap: 22px; transition: opacity .4s;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--acc);">05</div>
+            <h3 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 6vw, 92px); line-height: 0.9;">Fica à vista de todos.</h3>
+            <p style="margin: 0; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.55; color: var(--ink); text-wrap: pretty;">Aprovado, o ponto aparece no mapa público. Quem tem a app instalada recebe um aviso no telemóvel — e outro quando o ponto é marcado como resolvido.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-sev="" aria-labelledby="h-sev" style="position: relative; height: 620vh; border-top: 1px solid var(--line);">
+      <div style="position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-content: var(--sevAlign, center); max-width: 1360px; margin: 0 auto; padding: var(--sevPadT, 70px) clamp(20px, 4vw, 48px) 30px; gap: var(--sevGap, 20px) 60px;">
+        <div style="display: flex; flex-direction: column; gap: clamp(16px, 2.4vh, 28px); position: relative; z-index: 2;">
+          <h2 id="h-sev" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: var(--sevH2, clamp(42px, 5.4vw, 84px)); line-height: 0.9;">Três níveis de perigo. <span style="color: var(--acc);">E um de alívio.</span></h2>
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line);">
+            <li data-sevitem="0" style="display: flex; gap: 18px; align-items: baseline; padding: var(--sevItemPad, clamp(10px, 1.8vh, 18px)) 0; border-bottom: 1px solid var(--line); transition: opacity .35s;"><span style="width: 14px; height: 14px; flex: none; border-radius: 50%; background: #EAB308;"></span><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: clamp(20px, 1.7vw, 24px);">Grave</span><span style="color: var(--muted); font-size: var(--sevDesc, 16px); line-height: 1.3;">Atenção recomendada.</span></div></li>
+            <li data-sevitem="1" style="display: flex; gap: 18px; align-items: baseline; padding: var(--sevItemPad, clamp(10px, 1.8vh, 18px)) 0; border-bottom: 1px solid var(--line); transition: opacity .35s;"><span style="width: 14px; height: 14px; flex: none; border-radius: 50%; background: #F97316;"></span><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: clamp(20px, 1.7vw, 24px);">Muito Grave</span><span style="color: var(--muted); font-size: var(--sevDesc, 16px); line-height: 1.3;">Requer atenção urgente.</span></div></li>
+            <li data-sevitem="2" style="display: flex; gap: 18px; align-items: baseline; padding: var(--sevItemPad, clamp(10px, 1.8vh, 18px)) 0; border-bottom: 1px solid var(--line); transition: opacity .35s;"><span style="width: 14px; height: 14px; flex: none; border-radius: 50%; background: #EF4444;"></span><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: clamp(20px, 1.7vw, 24px);">Perigoso</span><span style="color: var(--muted); font-size: var(--sevDesc, 16px); line-height: 1.3;">Perigo iminente.</span></div></li>
+            <li data-sevitem="3" style="display: flex; gap: 18px; align-items: baseline; padding: var(--sevItemPad, clamp(10px, 1.8vh, 18px)) 0; border-bottom: 1px solid var(--line); transition: opacity .35s;"><span style="width: 14px; height: 14px; flex: none; border-radius: 50%; background: #22C55E;"></span><div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-weight: 700; font-size: clamp(20px, 1.7vw, 24px);">Resolvido</span><span style="color: var(--muted); font-size: var(--sevDesc, 16px); line-height: 1.3;">Um moderador marcou-o como corrigido no terreno. Não é uma confirmação oficial.</span></div></li>
+          </ol>
+        </div>
+        <div aria-hidden="true" style="position: relative; height: var(--sevVisH, clamp(300px, 52vh, 560px)); perspective: 1100px; display: flex; align-items: flex-end; justify-content: center;">
+          <div style="position: absolute; left: 50%; bottom: 0; width: 760px; height: 760px; margin-left: -380px; transform-origin: 50% 100%; transform: scale(var(--sevDisc, 1)) rotateX(62deg) rotateZ(calc(var(--sevRot, 0) * 1deg)); border-radius: 50%; overflow: hidden; background: #2a2622 url(../public/media/app/mapa-escuro.jpg) calc(var(--sevBx, -398) * 1px) calc(var(--sevBy, -1083) * 1px) / 1600px auto no-repeat; -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent);"></div>
+          <div style="position: absolute; left: 50%; bottom: 40px; width: 220px; height: 64px; margin-left: -110px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.7), transparent); transform: scale(calc(1 - var(--sevLift, 0) * 0.3));"></div>
+          <div style="position: absolute; left: 50%; bottom: 70px; width: 120px; height: 40px; margin-left: -60px; border-radius: 50%; border: 3px solid var(--sev); transform: scale(calc(1 + var(--sevPulse, 0) * 2.2)); opacity: calc(1 - var(--sevPulse, 0));"></div>
+          <div style="position: relative; margin-bottom: 70px; display: flex; flex-direction: column; align-items: center; transform: translateY(calc(var(--sevLift, 0) * -26px));">
+            <div style="width: var(--sevPin, clamp(150px, 20vh, 210px)); height: var(--sevPin, clamp(150px, 20vh, 210px)); border-radius: 50%; background: var(--sev); display: flex; align-items: center; justify-content: center; box-shadow: 0 30px 60px rgba(0,0,0,.4), inset 0 -10px 0 rgba(0,0,0,.12);">
+              <svg viewBox="0 0 100 100" width="56%" height="56%" fill="#FFFFFF"><path d="M44 12Q50 3 56 12L62 32H38Z"></path><path d="M35.2 42H64.8L69.5 58H30.5Z"></path><path d="M27.6 68H72.4L76 82H24Z"></path><rect x="10" y="80" width="80" height="10" rx="5"></rect></svg>
+            </div>
+            <div style="width: 0; height: 0; border-left: 22px solid transparent; border-right: 22px solid transparent; border-top: 30px solid var(--sev); margin-top: -6px;"></div>
+          </div>
+          <div data-sevlabel="" style="position: absolute; top: 0; right: 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: 0.08em; background: var(--sev); color: #0A0A0A; padding: 8px 12px;">GRAVE</div>
+        </div>
+      </div>
+    </section>
+
+    <section data-maps="" aria-labelledby="h-maps" style="position: relative; height: 380vh; border-top: 1px solid var(--line);">
+      <div style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; gap: 24px; max-width: 1360px; margin: 0 auto; padding: 80px clamp(20px, 4vw, 48px) 40px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 40px;">
+          <h2 id="h-maps" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 5vw, 80px); line-height: 0.9; max-width: 11em;">O mesmo mapa, <span style="color: var(--acc);">como preferires.</span></h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <span data-maplabel="0" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px; border: 1px solid var(--line); transition: background-color .3s, color .3s;">SATÉLITE</span>
+            <span data-maplabel="1" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px; border: 1px solid var(--line); transition: background-color .3s, color .3s;">RUAS</span>
+            <span data-maplabel="2" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px; border: 1px solid var(--line); transition: background-color .3s, color .3s;">CLARO</span>
+            <span data-maplabel="3" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px; border: 1px solid var(--line); transition: background-color .3s, color .3s;">ESCURO</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px; color: var(--muted);">+ TERRENO</span>
+          </div>
+        </div>
+        <div style="position: relative; height: min(62vh, 640px); overflow: hidden; background: #1a1a1a;">
+          <img data-maplayer="0" src="../public/media/app/mapa-sat.jpg" alt="Mapa em vista de satélite" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; transform: scale(calc(1.02 + var(--mz, 0) * 0.12));">
+          <img data-maplayer="1" src="../public/media/app/mapa-ruas.jpg" alt="Mapa em vista de ruas" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; transform: scale(calc(1.02 + var(--mz, 0) * 0.12)); clip-path: inset(100% 0 0 0);">
+          <img data-maplayer="2" src="../public/media/app/mapa-claro.jpg" alt="Mapa em tema claro" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; transform: scale(calc(1.02 + var(--mz, 0) * 0.12)); clip-path: inset(100% 0 0 0);">
+          <img data-maplayer="3" src="../public/media/app/mapa-escuro.jpg" alt="Mapa em tema escuro" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 44%; transform: scale(calc(1.02 + var(--mz, 0) * 0.12)); clip-path: inset(100% 0 0 0);">
+          <div data-maptape="" aria-hidden="true" style="position: absolute; left: -10%; width: 120%; height: 28px; top: -60px; transform: rotate(-4deg); background: linear-gradient(-45deg, #F7931E 25%, #0A0A0A 25% 50%, #F7931E 50% 75%, #0A0A0A 75%) 0 0 / 40px 40px; box-shadow: 0 10px 24px rgba(0,0,0,.4);"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-mais" style="border-top: 1px solid var(--line);">
+      <div style="max-width: 1360px; margin: 0 auto; padding: clamp(80px, 10vw, 150px) clamp(20px, 4vw, 48px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 60px;">
+        <div style="display: flex; flex-direction: column; gap: 28px;">
+          <h2 id="h-mais" data-reveal="" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 5vw, 80px); line-height: 0.9;">Sem loja. <span style="color: var(--acc);">Sem conta.</span></h2>
+          <p data-reveal="" style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 26em; text-wrap: pretty;">O VilaSafe abre no browser e instala-se no ecrã do telemóvel a partir daí. Não está — nem precisa de estar — nas lojas de aplicações.</p>
+        </div>
+        <dl style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid var(--ink);">
+          <div data-reveal="" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line);"><dt style="font-weight: 700; font-size: 19px;">Instalável</dt><dd style="margin: 0; color: var(--muted); font-size: 17px; line-height: 1.5;">Direto do browser, com ícone próprio no ecrã inicial.</dd></div>
+          <div data-reveal="" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line);"><dt style="font-weight: 700; font-size: 19px;">Notificações</dt><dd style="margin: 0; color: var(--muted); font-size: 17px; line-height: 1.5;">Quando um ponto novo é aprovado e quando um é marcado como resolvido.</dd></div>
+          <div data-reveal="" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line);"><dt style="font-weight: 700; font-size: 19px;">Lista</dt><dd style="margin: 0; color: var(--muted); font-size: 17px; line-height: 1.5;">Alternativa ao mapa, com filtro por gravidade e uma secção só para o que já foi resolvido.</dd></div>
+          <div data-reveal="" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line);"><dt style="font-weight: 700; font-size: 19px;">Privacidade</dt><dd style="margin: 0; color: var(--muted); font-size: 17px; line-height: 1.5;">Não há registo. Nome e email de quem reporta ficam só com a moderação.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-nao" style="background: #F7931E; color: #0A0A0A;">
+      <div style="max-width: 1360px; margin: 0 auto; padding: clamp(80px, 10vw, 150px) clamp(20px, 4vw, 48px); display: flex; flex-direction: column; gap: 56px;">
+        <h2 id="h-nao" data-reveal="" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 7vw, 116px); line-height: 0.88; max-width: 10em;">Para que fique claro.</h2>
+        <ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 0 56px;">
+          <li data-reveal="" style="display: flex; gap: 22px; padding: 26px 0; border-top: 2px solid #0A0A0A;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; padding-top: 4px;">01</span><p style="margin: 0; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.45; font-weight: 500;"><strong>Não é uma app oficial.</strong> É um projeto independente, sem ligação a nenhuma câmara ou junta de freguesia.</p></li>
+          <li data-reveal="" style="display: flex; gap: 22px; padding: 26px 0; border-top: 2px solid #0A0A0A;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; padding-top: 4px;">02</span><p style="margin: 0; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.45; font-weight: 500;"><strong>Não resolve os problemas.</strong> Sinaliza e dá visibilidade. A reparação cabe às entidades competentes.</p></li>
+          <li data-reveal="" style="display: flex; gap: 22px; padding: 26px 0; border-top: 2px solid #0A0A0A;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; padding-top: 4px;">03</span><p style="margin: 0; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.45; font-weight: 500;"><strong>Não acusa ninguém.</strong> Nenhum reporte é uma crítica ao trabalho de pessoas, empresas ou entidades.</p></li>
+          <li data-reveal="" style="display: flex; gap: 22px; padding: 26px 0; border-top: 2px solid #0A0A0A;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 15px; padding-top: 4px;">04</span><p style="margin: 0; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.45; font-weight: 500;"><strong>É um retrato de um momento.</strong> Cada reporte mostra o local quando foi submetido. Pode já ter mudado.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-tec" style="border-bottom: 1px solid var(--line);">
+      <div style="max-width: 1360px; margin: 0 auto; padding: clamp(70px, 8vw, 120px) clamp(20px, 4vw, 48px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 40px 60px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <h2 id="h-tec" style="margin: 0; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 13px; letter-spacing: 0.1em; color: var(--muted);">POR DENTRO</h2>
+          <p style="margin: 0; font-size: 19px; line-height: 1.5; max-width: 20em;">Para quem quer saber como é feito.</p>
+        </div>
+        <ul data-reveal="" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.5;">
+          <li><span style="color: var(--muted);">app</span> — Next.js 16 · React 19 · TypeScript</li>
+          <li><span style="color: var(--muted);">ui</span> — Tailwind 4 · shadcn/ui</li>
+          <li><span style="color: var(--muted);">dados</span> — Supabase · Postgres · Storage</li>
+          <li><span style="color: var(--muted);">alojamento</span> — Vercel</li>
+        </ul>
+        <ul data-reveal="" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 15px; line-height: 1.5;">
+          <li><span style="color: var(--muted);">mapa</span> — Mapbox GL JS</li>
+          <li><span style="color: var(--muted);">fronteira</span> — Turf.js</li>
+          <li><span style="color: var(--muted);">visão</span> — Google Gemini</li>
+          <li><span style="color: var(--muted);">avisos</span> — Resend · Web Push</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-cta" style="position: relative;">
+      <div style="max-width: 1360px; margin: 0 auto; padding: clamp(90px, 12vw, 180px) clamp(20px, 4vw, 48px); display: flex; flex-direction: column; gap: 36px;">
+        <h2 id="h-cta" data-reveal="" style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: clamp(48px, 7vw, 116px); line-height: 0.88;">Vê como está<br>a tua rua.</h2>
+        <a data-reveal="" href="https://fozdoarelho.vilasafe.pt" style="align-self: flex-start; display: flex; flex-direction: column; gap: 0; text-decoration: none; color: var(--ink); max-width: 100%;">
+          <span aria-hidden="true" style="height: 14px; background: linear-gradient(-45deg, #F7931E 25%, transparent 25% 50%, #F7931E 50% 75%, transparent 75%) 0 0 / 40px 40px; animation: vsTape 9s linear infinite;"></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: clamp(20px, 4.2vw, 60px); padding: 22px 0; overflow-wrap: anywhere;">fozdoarelho.vilasafe.pt <span aria-hidden="true" style="color: var(--acc);">→</span></span>
+          <span aria-hidden="true" style="height: 14px; background: linear-gradient(-45deg, #F7931E 25%, transparent 25% 50%, #F7931E 50% 75%, transparent 75%) 0 0 / 40px 40px; animation: vsTape 9s linear infinite reverse;"></span>
+        </a>
+        <p data-reveal="" style="margin: 0; font-size: 18px; line-height: 1.5; color: var(--muted); max-width: 30em;">Por agora, só existe na Foz do Arelho. Outras vilas estão nos planos — cada uma terá o seu endereço.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top: 1px solid var(--line);">
+    <div style="max-width: 1360px; margin: 0 auto; padding: 32px clamp(20px, 4vw, 48px); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <svg viewBox="0 0 100 100" width="24" height="24" fill="#F7931E" aria-hidden="true"><path d="M44 12Q50 3 56 12L62 32H38Z"></path><path d="M35.2 42H64.8L69.5 58H30.5Z"></path><path d="M27.6 68H72.4L76 82H24Z"></path><rect x="10" y="80" width="80" height="10" rx="5"></rect></svg>
+        <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px;">VILASAFE</span>
+      </div>
+      <div style="font-size: 14px; color: var(--muted);">Projeto cívico independente · carácter informativo · 2026</div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;auto&quot;, &quot;claro&quot;, &quot;escuro&quot;], &quot;default&quot;: &quot;auto&quot;, &quot;tsType&quot;: &quot;'auto'|'claro'|'escuro'&quot;}, &quot;phoneTilt&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { theme: null };
+  rootRef = React.createRef();
+  cur = { hrx: 6, hry: -16, srx: 6, sry: -14 };
+  mouse = { x: 0, y: 0 };
+
+  themeName() {
+    if (this.state.theme) return this.state.theme;
+    const p = this.props.theme ?? 'auto';
+    if (p !== 'auto') return p;
+    return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro';
+  }
+
+  applyTheme() {
+    const r = this.rootRef.current; if (!r) return;
+    const light = this.themeName() === 'claro';
+    const v = light
+      ? { bg: '#FFFFFF', ink: '#0A0A0A', muted: '#5C5852', line: '#E6E2DC', panel: '#F4F1EC', acc: '#A85600', edge: '#c9c4bc' }
+      : { bg: '#0A0A0A', ink: '#F4F1EC', muted: '#A3A09A', line: '#262626', panel: '#141414', acc: '#F7931E', edge: '#1d1d1d' };
+    Object.entries(v).forEach(([k, val]) => r.style.setProperty('--' + k, val));
+    document.body.style.background = v.bg;
+  }
+
+  componentDidMount() {
+    const r = this.rootRef.current;
+    this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.applyTheme();
+
+    r.querySelectorAll('[data-words]').forEach(el => {
+      const words = el.textContent.trim().split(/\s+/);
+      el.textContent = '';
+      words.forEach((w, i) => {
+        const s = document.createElement('span');
+        s.textContent = w + (i < words.length - 1 ? ' ' : '');
+        s.setAttribute('data-word', '');
+        el.appendChild(s);
+      });
+    });
+
+    this.frames = Array.from({ length: 80 }, (_, i) => `../public/media/ia/f${String(i).padStart(3, '0')}.jpg`);
+    this.frames.forEach(s => { const im = new Image(); im.src = s; });
+
+    if (!this.reduced) {
+      const els = r.querySelectorAll('[data-reveal]');
+      els.forEach(el => {
+        if (!innerHeight || el.getBoundingClientRect().top < innerHeight) return;
+        const d = +(el.getAttribute('data-delay') || 0);
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(28px)';
+        el.style.transition = `opacity .9s cubic-bezier(.2,.7,.2,1) ${d}ms, transform .9s cubic-bezier(.2,.7,.2,1) ${d}ms`;
+      });
+      this.pending = Array.from(els).filter(el => el.style.opacity === '0');
+    }
+
+    this.onMove = e => { this.mouse.x = e.clientX / innerWidth - 0.5; this.mouse.y = e.clientY / innerHeight - 0.5; };
+    addEventListener('pointermove', this.onMove, { passive: true });
+    this.onResize = () => this.layout();
+    addEventListener('resize', this.onResize);
+    this.layout();
+    this.onScroll = () => this.tick();
+    addEventListener('scroll', this.onScroll, { passive: true });
+    [60, 100, 400, 1000].forEach(t => setTimeout(() => this.tick(), t));
+    addEventListener('load', this.onScroll);
+    const loop = () => { this.tick(); this.raf = requestAnimationFrame(loop); };
+    this.raf = requestAnimationFrame(loop);
+  }
+
+  componentDidUpdate() { this.applyTheme(); }
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+    removeEventListener('pointermove', this.onMove);
+    removeEventListener('resize', this.onResize);
+    removeEventListener('scroll', this.onScroll);
+  }
+
+  layout() {
+    const r = this.rootRef.current; if (!r) return;
+    const narrow = innerWidth < 860;
+    const set = (k, v) => r.style.setProperty(k, v);
+    set('--phoneJustify', narrow ? 'center' : 'flex-end');
+    set('--phoneScale', narrow ? String(Math.min(0.78, innerHeight / 980)) : String(Math.min(1, innerHeight / 760)));
+    set('--phoneY', narrow ? '-14vh' : '0px');
+    set('--stepAlign', narrow ? 'flex-end' : 'center');
+    set('--stepW', narrow ? '100%' : '520px');
+    set('--stepBg', narrow ? 'var(--bg)' : 'transparent');
+    set('--stepPad', narrow ? '24px 22px 28px' : '0px');
+    const vis = Math.max(120, Math.min(300, innerHeight - 420));
+    const sn = innerWidth < 1000;
+    set('--sevAlign', sn ? 'start' : 'center');
+    set('--sevPadT', sn ? '84px' : '70px');
+    set('--sevGap', sn ? '10px' : '20px');
+    set('--sevH2', sn ? 'clamp(30px, 8.4vw, 44px)' : 'clamp(42px, 5.4vw, 84px)');
+    set('--sevItemPad', sn ? '8px' : 'clamp(10px, 1.8vh, 18px)');
+    set('--sevDesc', sn ? '14px' : '16px');
+    set('--sevVisH', sn ? vis + 'px' : 'clamp(300px, 52vh, 560px)');
+    set('--sevPin', sn ? Math.round(vis * 0.42) + 'px' : 'clamp(150px, 20vh, 210px)');
+    set('--sevDisc', sn ? String((vis / 420).toFixed(2)) : '1');
+  }
+
+  progress(el) {
+    const b = el.getBoundingClientRect();
+    const span = b.height - innerHeight;
+    return Math.max(0, Math.min(1, span > 0 ? -b.top / span : 0));
+  }
+
+  tick() {
+    const r = this.rootRef.current; if (!r) return;
+    const k = this.reduced ? 1 : 0.075;
+    const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const tilt = !this.reduced && (this.props.phoneTilt ?? true);
+    const c = this.cur;
+    const vh = innerHeight || 0;
+    const sy = vh ? scrollY / vh : 0;
+    ['hrx','hry','srx','sry'].forEach((n, i) => { if (!Number.isFinite(c[n])) c[n] = [6, -16, 6, -14][i]; });
+    if (this.pending && this.pending.length) {
+      this.pending = this.pending.filter(el => {
+        const b = el.getBoundingClientRect();
+        if (!vh || (b.top < vh * 0.94 && b.bottom > 0)) { el.style.opacity = '1'; el.style.transform = 'none'; return false; }
+        return b.bottom > 0 || true;
+      });
+    }
+
+    const thx = tilt ? 6 - this.mouse.y * 10 + sy * 8 : 6;
+    const thy = tilt ? -16 + this.mouse.x * 22 + sy * 14 : -16;
+    c.hrx += (clamp(thx, -4, 16) - c.hrx) * k;
+    c.hry += (clamp(thy, -30, 22) - c.hry) * k;
+    r.style.setProperty('--hrx', c.hrx.toFixed(2));
+    r.style.setProperty('--hry', c.hry.toFixed(2));
+
+    const prob = r.querySelector('[data-problem]');
+    if (prob) {
+      const p = this.reduced ? 1 : this.progress(prob);
+      const ws = prob.querySelectorAll('[data-word]');
+      const n = ws.length;
+      ws.forEach((w, i) => { w.style.opacity = String(0.16 + 0.84 * clamp(p * 1.35 * n - i, 0, 1)); });
+    }
+
+    const story = r.querySelector('[data-story]');
+    if (story) {
+      const p = this.progress(story);
+      const f = p * 4;
+      const step = clamp(Math.round(f), 0, 4);
+      story.querySelectorAll('[data-screen]').forEach(el => { el.style.opacity = +el.getAttribute('data-screen') === step ? '1' : '0'; });
+      story.querySelectorAll('[data-step]').forEach(el => { el.firstElementChild.style.opacity = +el.getAttribute('data-step') === step ? '1' : '0.22'; });
+      const num = story.querySelector('[data-stepnum]'); if (num) num.textContent = '0' + (step + 1);
+      const ai = story.querySelector('[data-aiframe]');
+      if (ai) {
+        const local = clamp((f - 0.55) / 0.85, 0, 1);
+        const src = this.frames[Math.round(local * 79)];
+        if (ai.getAttribute('src') !== src) ai.setAttribute('src', src);
+      }
+      const T = [[6, -16], [4, 14], [10, -10], [2, 18], [8, -20]];
+      const a = T[Math.floor(clamp(f, 0, 3.999))], b = T[Math.ceil(clamp(f, 0, 4))];
+      const t = ease(f - Math.floor(clamp(f, 0, 3.999)));
+      const tx = a[0] + (b[0] - a[0]) * t + (tilt ? -this.mouse.y * 4 : 0);
+      const ty = a[1] + (b[1] - a[1]) * t + (tilt ? this.mouse.x * 6 : 0);
+      c.srx += (tx - c.srx) * k; c.sry += (ty - c.sry) * k;
+      r.style.setProperty('--srx', c.srx.toFixed(2));
+      r.style.setProperty('--sry', c.sry.toFixed(2));
+    }
+
+    const sev = r.querySelector('[data-sev]');
+    if (sev) {
+      const raw = this.progress(sev);
+      this.sevP = this.sevP == null || this.reduced ? raw : this.sevP + (raw - this.sevP) * 0.06;
+      const p = this.sevP;
+      const f = clamp(p * 3.5 - 0.15, 0, 3);
+      const i = Math.min(2, Math.floor(f)), lt = f - i;
+      const smooth = t => t * t * (3 - 2 * t);
+      const b = f >= 3 ? 1 : smooth(clamp((lt - 0.3) / 0.55, 0, 1));
+      const s = i + b;
+      const cols = ['#EAB308', '#F97316', '#EF4444', '#22C55E'];
+      const names = ['GRAVE', 'MUITO GRAVE', 'PERIGOSO', 'RESOLVIDO'];
+      const hex = x => [1, 3, 5].map(j => parseInt(x.slice(j, j + 2), 16));
+      const A = hex(cols[i]), B = hex(cols[i + 1]);
+      sev.style.setProperty('--sev', `rgb(${A.map((v, j) => Math.round(v + (B[j] - v) * b)).join(',')})`);
+      const at = (arr) => arr[i] + (arr[i + 1] - arr[i]) * b;
+      sev.style.setProperty('--sevRot', (at([-16, 6, -8, 14]) + p * 6).toFixed(2));
+      sev.style.setProperty('--sevBx', at([-398, -503, -220, -398]).toFixed(1));
+      sev.style.setProperty('--sevBy', at([-1083, -971, -1140, -1083]).toFixed(1));
+      sev.style.setProperty('--sevLift', this.reduced ? '0' : Math.sin(Math.PI * b).toFixed(3));
+      sev.style.setProperty('--sevPulse', this.reduced ? '1' : ((performance.now() / 1800) % 1).toFixed(3));
+      const active = Math.round(s);
+      const label = sev.querySelector('[data-sevlabel]'); if (label && label.textContent !== names[active]) label.textContent = names[active];
+      sev.querySelectorAll('[data-sevitem]').forEach(el => { el.style.opacity = +el.getAttribute('data-sevitem') === active ? '1' : '0.32'; });
+    }
+
+    const maps = r.querySelector('[data-maps]');
+    if (maps) {
+      const p = this.progress(maps);
+      const t = p * 3.6 + 0.2;
+      maps.style.setProperty('--mz', p.toFixed(3));
+      let tapeY = -60, active = 0;
+      const frame = maps.querySelector('[data-maplayer="0"]').parentElement;
+      const h = frame.clientHeight;
+      maps.querySelectorAll('[data-maplayer]').forEach(el => {
+        const i = +el.getAttribute('data-maplayer'); if (!i) return;
+        const kk = ease(clamp(t - i + 0.4, 0, 1));
+        if (kk > 0.5) active = i;
+        el.style.clipPath = kk >= 1 ? 'none' : `inset(${((1 - kk) * 100).toFixed(2)}% 0 0 0)`;
+        if (kk > 0 && kk < 1) tapeY = (1 - kk) * h - 14;
+      });
+      const tape = maps.querySelector('[data-maptape]'); if (tape) tape.style.top = tapeY + 'px';
+      maps.querySelectorAll('[data-maplabel]').forEach(el => {
+        const on = +el.getAttribute('data-maplabel') === active;
+        el.style.background = on ? '#F7931E' : 'transparent';
+        el.style.color = on ? '#0A0A0A' : 'var(--ink)';
+        el.style.borderColor = on ? '#F7931E' : 'var(--line)';
+      });
+    }
+  }
+
+  renderVals() {
+    const light = this.themeName() === 'claro';
+    return {
+      rootRef: this.rootRef,
+      themeLabel: light ? 'TEMA ESCURO' : 'TEMA CLARO',
+      toggleTheme: () => this.setState({ theme: light ? 'escuro' : 'claro' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

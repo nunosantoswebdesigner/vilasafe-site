@@ -1,0 +1,500 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* O tema é controlado pela classe em <html> (.dark / .light), definida antes do
+   primeiro paint por um script inline em app/layout.tsx. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  /* Tipografia (SPEC §2): Barlow para texto, Barlow Condensed itálico para títulos,
+     JetBrains Mono para rótulos e dados. */
+  --font-sans: var(--font-barlow);
+  --font-display: var(--font-barlow-condensed);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-barlow-condensed);
+
+  /* Tokens da marca */
+  --color-vs-bg: var(--vs-bg);
+  --color-vs-ink: var(--vs-ink);
+  --color-vs-muted: var(--vs-muted);
+  --color-vs-line: var(--vs-line);
+  --color-vs-panel: var(--vs-panel);
+  --color-vs-acc: var(--vs-acc);
+  --color-vs-edge: var(--vs-edge);
+  --color-brand: #f7931e;
+  --color-brand-ink: #0a0a0a;
+  --color-sev-grave: #eab308;
+  --color-sev-muito-grave: #f97316;
+  --color-sev-perigoso: #ef4444;
+  --color-sev-resolvido: #22c55e;
+
+  /* Ponte para os tokens do shadcn/ui */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* Estética de sinalização: sem cantos arredondados (exceto telefone e pinos). */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
+  --ease-vs: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --animate-vs-tape: vs-tape 7s linear infinite;
+  --animate-vs-tape-slow: vs-tape 9s linear infinite;
+  --animate-vs-ring: vs-ring 2.6s ease-out infinite;
+}
+
+/* ---------- Tokens de tema ----------
+   Escuro é o default da marca. O claro não é o escuro invertido: o laranja de texto
+   desce para #A85600 para cumprir AA sobre branco, a aresta do telefone fica quente. */
+:root,
+.dark {
+  --vs-bg: #0a0a0a;
+  --vs-ink: #f4f1ec;
+  --vs-muted: #a3a09a;
+  --vs-line: #262626;
+  --vs-panel: #141414;
+  --vs-acc: #f7931e;
+  --vs-edge: #1d1d1d;
+  /* Mapa vetorial da secção de gravidade */
+  --map-land: #141413;
+  --map-street: #33312d;
+  --map-block: #1b1a18;
+  --map-road: #4a463f;
+  --map-road-edge: #23211e;
+  --map-water: #0f1b22;
+  --map-water-line: #1d3340;
+  --map-park: #16201a;
+  --map-label: #7d786f;
+  color-scheme: dark;
+}
+
+.light {
+  --vs-bg: #ffffff;
+  --vs-ink: #0a0a0a;
+  --vs-muted: #5c5852;
+  --vs-line: #e6e2dc;
+  --vs-panel: #f4f1ec;
+  --vs-acc: #a85600;
+  --vs-edge: #c9c4bc;
+  --map-land: #f1ede6;
+  --map-street: #ffffff;
+  --map-block: #e3ddd3;
+  --map-road: #ffffff;
+  --map-road-edge: #d8d1c5;
+  --map-water: #cfe2ea;
+  --map-water-line: #b4d0dc;
+  --map-park: #d9e6cf;
+  --map-label: #8a857c;
+  color-scheme: light;
+}
+
+/* Sem JavaScript, segue a preferência do sistema. */
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --vs-bg: #ffffff;
+    --vs-ink: #0a0a0a;
+    --vs-muted: #5c5852;
+    --vs-line: #e6e2dc;
+    --vs-panel: #f4f1ec;
+    --vs-acc: #a85600;
+    --vs-edge: #c9c4bc;
+    --map-land: #f1ede6;
+    --map-street: #ffffff;
+    --map-block: #e3ddd3;
+    --map-road: #ffffff;
+    --map-road-edge: #d8d1c5;
+    --map-water: #cfe2ea;
+    --map-water-line: #b4d0dc;
+    --map-park: #d9e6cf;
+    --map-label: #8a857c;
+    color-scheme: light;
+  }
+}
+
+:root {
+  --background: var(--vs-bg);
+  --foreground: var(--vs-ink);
+  --card: var(--vs-panel);
+  --card-foreground: var(--vs-ink);
+  --popover: var(--vs-panel);
+  --popover-foreground: var(--vs-ink);
+  --primary: #f7931e;
+  --primary-foreground: #0a0a0a;
+  --secondary: var(--vs-panel);
+  --secondary-foreground: var(--vs-ink);
+  --muted: var(--vs-panel);
+  --muted-foreground: var(--vs-muted);
+  --accent: var(--vs-panel);
+  --accent-foreground: var(--vs-ink);
+  --destructive: #ef4444;
+  --border: var(--vs-line);
+  --input: var(--vs-line);
+  --ring: #f7931e;
+  --radius: 0px;
+
+  /* Valores de layout que dependem do viewport (ajustados por JS em components/site/motion.tsx). */
+  --phone-scale: 1;
+  --ease-vs: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --sev-disc: 1;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+    background: var(--vs-bg);
+    -webkit-text-size-adjust: 100%;
+    /* Nada pode alargar a página no telemóvel (senão o browser encolhe tudo). */
+    overflow-x: clip;
+  }
+  body {
+    background: var(--vs-bg);
+    color: var(--vs-ink);
+    overflow-x: clip;
+    /* Palavras longas partem em vez de saírem do ecrã. */
+    overflow-wrap: break-word;
+    transition:
+      background-color 0.5s,
+      color 0.5s;
+  }
+  a {
+    color: inherit;
+    text-decoration-color: #f7931e;
+    text-underline-offset: 0.18em;
+  }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 3px solid #f7931e;
+    outline-offset: 4px;
+  }
+  ::selection {
+    background: #f7931e;
+    color: #0a0a0a;
+  }
+}
+
+/* Título de cartaz: Barlow Condensed itálico 800, maiúsculas. */
+@utility font-poster {
+  font-family: var(--font-barlow-condensed), sans-serif;
+  font-style: italic;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Fita de obra — o motivo gráfico da marca. Nunca dentro do logo. */
+@utility tape {
+  background: linear-gradient(
+      -45deg,
+      #f7931e 25%,
+      transparent 25% 50%,
+      #f7931e 50% 75%,
+      transparent 75%
+    )
+    0 0 / var(--tape-size, 40px) var(--tape-size, 40px);
+}
+
+@utility container-vs {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+@keyframes vs-tape {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px 0;
+  }
+}
+
+@keyframes vs-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Etiquetas do botão de tema: mostra a ação, não o estado. */
+html.light .theme-label-to-light,
+html:not(.light) .theme-label-to-dark {
+  display: none;
+}
+
+/* ---------- Secção "Como se sinaliza" ---------- */
+/* O telefone fica na 2.ª coluna do contentor, perto do texto. */
+.story-stage-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) 1fr;
+  align-items: center;
+  height: 100%;
+}
+.story-phone-slot {
+  grid-column: 2;
+}
+.story-phone-wrap {
+  transform: scale(var(--phone-scale));
+}
+.story-step {
+  align-items: center;
+}
+.story-card {
+  max-width: 640px;
+}
+
+/* Ecrãs do telefone: o que sai sobe e encolhe, o que entra vem de baixo e assenta. */
+.story-screen {
+  transition:
+    opacity 0.55s ease,
+    transform 0.9s var(--ease-vs);
+}
+.story-screen[data-state="after"] {
+  opacity: 0;
+  transform: translateY(8%) scale(1.04);
+}
+.story-screen[data-state="before"] {
+  opacity: 0;
+  transform: translateY(-5%) scale(0.96);
+}
+.story-screen[data-state="active"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Cartão flutuante: entra depois do ecrã, com um pequeno atraso. */
+.story-chip {
+  transition:
+    opacity 0.45s ease,
+    transform 0.8s var(--ease-vs);
+}
+.story-chip[data-state="after"] {
+  opacity: 0;
+  transform: translateY(22px) scale(0.96);
+}
+.story-chip[data-state="before"] {
+  opacity: 0;
+  transform: translateY(-18px) scale(0.96);
+}
+.story-chip[data-state="active"] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.18s;
+}
+
+/* Reflexo que atravessa o ecrã quando o passo muda */
+.story-glare {
+  position: absolute;
+  inset: -10% -60%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.28) 48%,
+    rgba(255, 255, 255, 0.06) 54%,
+    transparent 62%
+  );
+  mix-blend-mode: screen;
+}
+.story-glare.is-sweeping {
+  animation: vs-glare 1s var(--ease-vs);
+}
+
+/* Pequeno "assentar" do telefone na mudança de passo (propriedade scale, independente do transform) */
+.story-phone-wrap.is-popping {
+  animation: vs-pop 0.7s var(--ease-vs);
+}
+
+/* Número do passo que rola + segmentos de progresso */
+.story-roll {
+  transition: transform 0.6s var(--ease-vs);
+}
+.story-seg {
+  background: rgb(10 10 10 / 0.22);
+  transition: background-color 0.4s ease;
+}
+.story-seg[data-on] {
+  background: #0a0a0a;
+}
+
+/* Cartões: só escurecem quando o JS está ativo (sem JS fica tudo legível).
+   O cartão ativo entra em cascata: etiqueta, título, texto. */
+.motion-ready .story-card {
+  transition: opacity 0.6s ease;
+}
+.motion-ready .story-card:not([data-active]) {
+  opacity: 0.22;
+}
+.motion-ready .story-card > * {
+  transition:
+    transform 0.9s var(--ease-vs),
+    opacity 0.6s ease;
+}
+.motion-ready .story-card:not([data-active]) > * {
+  transform: translateY(16px);
+}
+.motion-ready .story-card[data-active] > :nth-child(2) {
+  transition-delay: 0.04s;
+}
+.motion-ready .story-card[data-active] > :nth-child(3) {
+  transition-delay: 0.1s;
+}
+.motion-ready .story-card[data-active] > :nth-child(n + 4) {
+  transition-delay: 0.17s;
+}
+
+@keyframes vs-glare {
+  0% {
+    opacity: 1;
+    transform: translateX(-55%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(55%);
+  }
+}
+
+@keyframes vs-pop {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.03;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+@media (max-width: 859px) {
+  .story-stage-inner {
+    grid-template-columns: 1fr;
+  }
+  .story-phone-slot {
+    grid-column: 1;
+  }
+  /* Telefone fixo no topo, escalado para caber acima do painel de texto (ver layout() em motion.tsx). */
+  .story-phone-wrap {
+    transform: scale(var(--phone-scale));
+    margin-top: 82px;
+  }
+  .story-step {
+    align-items: flex-end;
+    padding-bottom: 3vh;
+  }
+  .story-card {
+    max-width: 100%;
+    background: var(--vs-bg);
+    padding: 24px 22px 28px;
+  }
+
+  /* Com JS: os cartões da lista ficam invisíveis (só marcam o scroll) e o texto do passo
+     ativo aparece no painel fixo por baixo do telefone. */
+  .motion-ready .story-step .story-card {
+    opacity: 0 !important;
+  }
+  .motion-ready .story-mpanel {
+    display: block;
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 34px 20px calc(18px + env(safe-area-inset-bottom));
+    background: linear-gradient(to bottom, transparent, var(--vs-bg) 30px);
+  }
+  .story-mpanel-cards {
+    display: grid;
+  }
+  .story-mcard {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.7s var(--ease-vs);
+  }
+  .story-mcard[data-active] {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.08s;
+  }
+}
+
+.story-mpanel {
+  display: none;
+}
+
+/* ---------- Secção de gravidade ---------- */
+.sev-stage {
+  --sev-vis-h: clamp(380px, 64vh, 660px);
+  --sev-anchor: 56%;
+  --sev-pin: clamp(130px, 17vh, 190px);
+  align-content: center;
+  padding-top: 70px;
+  row-gap: 20px;
+}
+.sev-title {
+  font-size: clamp(42px, 5.4vw, 84px);
+}
+.sev-item {
+  padding-block: clamp(10px, 1.8vh, 18px);
+}
+.sev-desc {
+  font-size: 16px;
+}
+
+@media (max-width: 999px) {
+  .sev-stage {
+    --sev-vis-h: clamp(220px, calc(100vh - 400px), 400px);
+    --sev-anchor: 58%;
+    --sev-pin: calc(var(--sev-vis-h) * 0.32);
+    align-content: start;
+    padding-top: 84px;
+    row-gap: 10px;
+  }
+  .sev-title {
+    font-size: clamp(30px, 8.4vw, 44px);
+  }
+  .sev-item {
+    padding-block: 8px;
+  }
+  .sev-desc {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Movimento reduzido: nada se mexe, tudo se lê. ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

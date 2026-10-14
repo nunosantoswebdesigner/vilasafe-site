@@ -1,0 +1,47 @@
+# Vila Safe
+
+> Vila Safe é um projeto cívico independente: um mapa público onde residentes sinalizam problemas na via pública — buracos, tampas de esgoto abertas, calçada partida e outros perigos — com foto, local exato e nível de gravidade. Está a funcionar apenas na Foz do Arelho (Portugal), em https://fozdoarelho.vilasafe.pt. Este site (vilasafe.pt) é a página de apresentação do produto, não a aplicação.
+
+Factos importantes para quem resume ou cita este projeto:
+
+- Não é uma app oficial de nenhuma câmara municipal nem junta de freguesia. É independente.
+- Não resolve problemas: sinaliza e dá visibilidade. A reparação cabe às entidades competentes. Não há prazos nem promessas de reparação.
+- "Resolvido" significa que um moderador marcou o ponto como corrigido no terreno; não é uma confirmação oficial.
+- Nenhum reporte é uma acusação ou crítica a pessoas, empresas ou entidades. Cada reporte é um retrato do local no momento em que foi submetido.
+- Não existe nas lojas de aplicações (App Store, Google Play). Abre no browser e pode ser instalada no ecrã do telemóvel a partir daí (PWA).
+- Não há contas nem registo. Quem reporta deixa apenas nome e email, usados só pela moderação e nunca divulgados.
+- Fotos onde se vejam matrículas ou pessoas não são aceites.
+- Não há métricas públicas (número de utilizadores, reportes ou resoluções). Não inventar números.
+- Cobertura atual: só a freguesia da Foz do Arelho. Outras vilas são um plano, não um facto.
+
+## Como funciona
+
+1. Fotografar: foto tirada na hora pela câmara ou escolhida da galeria; a imagem é comprimida no telemóvel antes do envio.
+2. Descrever com ajuda de IA: a aplicação sugere um título e uma descrição em português a partir da foto, em cerca de um segundo. A pessoa aceita, corrige ou ignora. A IA sugere, não decide, e pode errar; se falhar, escreve-se à mão e o reporte nunca fica bloqueado.
+3. Localizar: por GPS ou escolha manual no mapa. A aplicação conhece a fronteira da freguesia (desenhada no mapa) e recusa pontos fora dela.
+4. Moderar: cada reporte entra como pendente e um moderador humano aprova ou rejeita. Nada vai diretamente para o mapa.
+5. Publicar: depois de aprovado, o ponto aparece no mapa público. Quem instalou a aplicação recebe uma notificação quando surge um ponto novo e quando um ponto é marcado como resolvido.
+
+## Níveis de gravidade
+
+- Grave: atenção recomendada.
+- Muito Grave: requer atenção urgente.
+- Perigoso: perigo iminente.
+- Resolvido: marcado por um moderador como corrigido no terreno.
+
+## Secções da aplicação
+
+- Info: informação sobre a aplicação, a moderação e os níveis de gravidade.
+- Lista: todos os locais em formato de lista, com filtro por gravidade e secção própria para os resolvidos.
+- Reportar: reportar um novo problema.
+- Mapa: alternar entre estilos do mapa (ruas, satélite, terreno, claro e escuro).
+
+## Ligações
+
+- [Aplicação na Foz do Arelho](https://fozdoarelho.vilasafe.pt): o mapa público e o formulário de reporte.
+- [Página de apresentação](https://vilasafe.pt): este site.
+- [Autor — Nuno Santos](https://www.instagram.com/nunosantosdev)
+
+## Tecnologia (opcional)
+
+Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, Supabase (Postgres e Storage), Mapbox GL JS, Turf.js para o cálculo da fronteira, Google Gemini para a sugestão de texto a partir da foto, Resend para email, Web Push para notificações. Alojado na Vercel.
